@@ -1,6 +1,5 @@
-for name, df in datasets.items():
-#     print("\n" + "=" * 50)
-#     print(name.upper())
-#     print("=" * 50)
-#     missing = df.isnull().sum()
-#     print(missing[missing > 0])
+
+order_items["freight_pct"] = (
+    order_items["freight_value"]
+    / order_items["price"]
+) * 100

@@ -115,3 +115,159 @@ late_delivery_rate = orders["is_late"].mean()
 print(
     f"Late delivery rate: {late_delivery_rate:.2%}"
 )
+
+
+
+# order status
+
+print(orders["order_status"].value_counts())
+
+# for each order status how many missing delivery date we have 
+print(
+    pd.crosstab(
+        orders["order_status"],
+        orders["order_delivered_customer_date"].isna()
+    )
+)
+
+print(
+    orders.nlargest(
+        10,
+        "delivery_days"
+    )[
+        [
+            "order_id",
+            "order_status",
+            "order_purchase_timestamp",
+            "order_delivered_customer_date",
+            "order_estimated_delivery_date",
+            "delivery_days"
+        ]
+    ].to_string()
+)
+
+
+delivered_orders = orders[
+    orders["order_delivered_customer_date"].notna()
+]
+
+late_delivery_rate = delivered_orders["is_late"].mean()
+
+print(
+    f"Late delivery rate: {late_delivery_rate:.2%}"
+)
+
+
+print(order_items.head().to_string())
+print(order_items.describe().to_string())
+
+
+print(order_items["price"].describe())
+print(order_items["freight_value"].describe())
+
+
+print(order_items["order_id"].nunique())
+print(order_items["product_id"].nunique())
+print(order_items["seller_id"].nunique())
+
+
+# checking for average items per order
+items_per_order = (
+    len(order_items)
+    / order_items["order_id"].nunique()
+)
+print(f"Average items per order: {items_per_order:.2f}")
+
+
+
+
+print("=="*50)
+#how many orders contains more than one orders 
+
+items_per_order2 = (
+    order_items
+    .groupby("order_id")
+    .size()
+)
+
+print(items_per_order2.describe())
+
+print(
+    (items_per_order2 > 1).sum()
+)
+
+
+
+# Total Product Revenue 
+
+total_revenue = order_items["price"].sum()
+print(f"Total product revenue: R$ {total_revenue:,.2f}")
+
+# Shipping Revenue 
+
+total_freight = order_items["freight_value"].sum()
+print(f"Total freight value: R$ {total_freight:,.2f}")
+
+total_value = (
+    total_revenue + total_freight
+)
+
+print(f"Product + freight value: R$ {total_value:,.2f}")
+
+
+# Calculate AOV more importantly Average product revenue per order and Average freight value per order  
+
+unique_orders = order_items["order_id"].nunique()
+
+aov_product = total_revenue / unique_orders
+
+aov_with_freight = total_value / unique_orders
+
+print(f"Product AOV: R$ {aov_product:,.2f}")
+print(f"Product + freight AOV: R$ {aov_with_freight:,.2f}")
+
+
+#examine expansive products
+
+print(
+    order_items.nlargest(10, "price")[
+        [
+            "order_id",
+            "product_id",
+            "seller_id",
+            "price",
+            "freight_value"
+        ]
+    ]
+)
+
+
+# freight burden
+
+order_items["freight_pct"] = (
+    order_items["freight_value"]
+    / order_items["price"]
+) * 100
+
+
+print(order_items["freight_pct"].describe())
+
+
+
+print("--"*50)
+
+
+# product categoryies that generate the most revenue
+
+product_sales = order_items.merge(
+    products[
+        [
+            "product_id",
+            "product_category_name"
+        ]
+    ],
+    on = "product_id",
+    how="left"
+)
+
+print(product_sales.head())
