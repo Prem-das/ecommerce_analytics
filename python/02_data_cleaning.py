@@ -27,10 +27,11 @@ from pathlib import Path
 
 
 
-RAW_DIR = Path("C:/Users/premk/OneDrive/Documents/ecommerce_analytics/data/raw")
+BASE_DIR = Path(__file__).resolve().parent  
 
-PROCESSED_DIR = Path("C:/Users/premk/OneDrive/Documents/ecommerce_analytics/data/processed")
-
+# 2. Build the data paths relative to the BASE_DIR
+RAW_DIR = BASE_DIR / "data" / "raw"
+PROCESSED_DIR = BASE_DIR / "data" / "processed"
 
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 

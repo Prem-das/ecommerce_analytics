@@ -6,8 +6,9 @@ from pathlib import Path
     # ============================================================
 # CONFIGURATION
 # ============================================================
-DATA_DIR = Path("C:/Users/premk/OneDrive/Documents/ecommerce_analytics/data/raw")
+BASE_DIR = Path(__file__).resolve().parent  
 
+DATA_DIR = BASE_DIR / "data" / "raw"
 
 # ============================================================
 # LOAD DATA
